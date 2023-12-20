@@ -253,10 +253,6 @@ app.post('/add-medical-history',async (req,res)=>{
 });
 
 
-/**
- * request body for get appointments of patient should have 
- * patientid
- */
 app.post('/get-appointments-patient',async(req,res)=>{
     const {patientid} = req.body;
     const result = await client.execute(`SELECT * FROM local_db.appointments WHERE patientid = ${patientid} ALLOW FILTERING`);
@@ -270,7 +266,6 @@ app.post('/get-appointments-patient',async(req,res)=>{
         })
     }
 });
-
 
 /**
  * request body for get appointments of doctors should have 

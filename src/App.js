@@ -7,6 +7,7 @@ import ConditionalNavigation from "./components/conditionalNavigation";
 import DoctorDashboard from "./components/doctor-dashboard";
 import PatientDashboard from "./components/patient-dashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import PatientAppointments from "./components/patientAppointment";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -33,6 +34,14 @@ function App() {
             element={
               <PrivateRoute>
                 <PatientDashboard/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/patientAppointment"
+            element={
+              <PrivateRoute>
+                <PatientAppointments/>
               </PrivateRoute>
             }
           />
