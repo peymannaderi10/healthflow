@@ -5,13 +5,14 @@ import './login.css';
 function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [specialization, setSpecialization] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
   const [message, setMessage] = useState(""); // To display messages to the user
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,30 +27,34 @@ function SignUp() {
       setMessage("please select a user type");
       return;
     }
+    const userData = {
+      name: fullName,
+      email,
+      contact: phoneNumber,
+      password,
+      address: userType === 'patient' ? address : undefined,
+      specialization: userType === 'doctor' ? specialization : undefined
+    };
+
     try {
-      const response = await fetch("http://localhost:3001/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          firstName: firstName,
-          lastName: lastName,
-          address: address,
-          phoneNumber: phoneNumber,
-          username: email,
-          password: password,
-          userType: userType
-        })
+      // Choose API endpoint based on user type
+      const apiEndpoint = userType === 'doctor' ? 'http://localhost:3000/sign-up-doctor' : 'http://localhost:3000/sign-up-patient';
+
+      // API request to sign up the user
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
       });
 
-      const data = await response.json();
-      if (response.status === 201) {
-        setMessage("Sign Up Successful!"); // Display success message
-        navigate("/login");
+      const result = await response.json();
+
+      // Handle response
+      if (response.ok) {
+        setMessage('Signup successful');
+        navigate('/login'); // Redirect to login page
       } else {
-        console.error("Sign Up Failed emnail:", email, password);
-        setMessage(data.message || "Sign Up Failed"); // Display error message from server or default message
+        setMessage(result.message || 'Error occurred during sign up');
       }
     } catch (error) {
       console.error("Error during sign up", error);
@@ -81,45 +86,52 @@ function SignUp() {
     <h3>Sign up here</h3>
     <form onSubmit={handleSubmit}>
       <div className="inputBox">
+      <select className="buttonSpace" 
+          value={userType} onChange={(e) => setUserType(e.target.value)}>
+          <option value="" disabled selected>
+          Select User Type
+          </option>
+          <option value="doctor">Doctor</option>
+          <option value="patient">Patient</option>
+          </select>
+
         <input   
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder="first name" />
-        
-        <input 
-          value={lastName} onChange={(e) => setLastName(e.target.value)}
-          placeholder="last name" />
-        
-        <input 
-        value={address} onChange={(e) => setAddress(e.target.value)}
-        placeholder="address" />
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          placeholder="full name" disabled={!userType} />
+
+        {userType === 'patient' && (
+          <input 
+            value={address} 
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Address"  disabled={!userType}/>
+        )}
+
+        {userType === 'doctor' && (
+          <input 
+            value={specialization} 
+            onChange={(e) => setSpecialization(e.target.value)}
+            placeholder="Specialization" disabled={!userType}/>
+        )}
 
         <input 
           onChange={(e) => setPhoneNumber(e.target.value)}
-          placeholder="phone number" />
+          placeholder="phone number" disabled={!userType}/>
 
         <input 
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="email" />
+            placeholder="email" disabled={!userType}/>
         
         <input
             type="password"
             value={password}
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
+            disabled={!userType}
           />
-
-        <select className="buttonSpace" 
-          value={userType} onChange={(e) => setUserType(e.target.value)}>
-          <option value="" disabled selected>
-          Select User Type
-          </option>
-          <option value="doctor">Doctor</option>
-          </select>
-
-       
+     
       </div>
-      <input type="submit" name="" value="Sign up" />
+      <input type="submit" name="" value="Sign up" disabled={!userType}/>
     </form>
     <div className="text-center">
       {/* <p style={{ color: '#59238F' }}>Sign-Up</p> */}

@@ -10,11 +10,11 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(""); // To display messages to the user
+  const [userType,setUserType] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage(""); // Clear previous messages
-    console.log("Test");
     // Simple validation
     if (!email || !password) {
       setMessage("Email and password are required");
@@ -22,73 +22,36 @@ function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const apiEndpoint = userType === 'doctor' ? 'http://localhost:3000/login-doctor' : 'http://localhost:3000/login-patient';
+  
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username: email, password: password })
+        body: JSON.stringify({ email: email, password: password }) // Corrected payload
       });
-
-      const data = await response.json();
-      /*console.log(data.userType);
-      if (response.status === 200) {
-        if (data.userType === "contractor") {
-          fetch(`http://localhost:3001/getUserInfo?username=${email}`, {
-            headers: {
-              Accept: "application/json"
-            }
-          })
-            .then((response) => {
-              if (!response.ok) {
-                console.log("error");
-                throw new Error("Network response was not ok");
-              }
-              return response.json(); // Convert the response to JSON
-            })
-            .then((data) => {
-              console.log("Setting user data", data);
-              login(data);
-              navigate("/contractorDashboard");
-            })
-            .catch((error) => {
-              console.error("Error fetching user data:", error);
-              // Handle any errors from fetching user data
-            });
-        }
-
-        if (data.userType === "homeowner") {
-          fetch(`http://localhost:3001/getUserInfo?username=${email}`, {
-              headers: {
-                'Accept': 'application/json'
-              }
-            })
-            .then(response => {
-              if (!response.ok) {
-                console.log("error");
-                throw new Error('Network response was not ok');
-              }
-              return response.json(); // Convert the response to JSON
-            })
-            .then(data => {
-              console.log('Setting user data', data);
-              login(data);
-              navigate('/dashboard');
-            })
-            .catch(error => {
-              console.error('Error fetching user data:', error);
-              // Handle any errors from fetching user data
-            });
-        }
   
+      const data = await response.json(); // Always parse the response
+  
+      // Check if login is successful by inspecting the response data
+      if (data.message && data.message === "Invalid Credentials") {
+        setMessage("Invalid Credentials"); // Set error message
       } else {
-        console.error("Login Failed email:", email, password);
-        setMessage(data.message || "Login Failed"); // Display error message from server or default message
-      }*/
+        login(data); // Assuming valid data is returned on successful login
+  
+        // Navigate to the appropriate dashboard based on user type
+        if (userType === "patient") {
+          navigate('/patient-dashboard');
+        } else if (userType === "doctor") {
+          navigate('/doctor-dashboard');
+        }
+      }
     } catch (error) {
       console.error("Error during Login", error);
-      setMessage("An error occurred during Login"); // Display error message
+      setMessage("An error occurred during Login");
     }
+    
   };
 
   return (
@@ -111,20 +74,29 @@ function Login() {
       <div className="loginBox">
         <img className="user" src="https://i.ibb.co/yVGxFPR/2.png" height="100px" width="100px" alt="User" />
         <h3>Sign in here</h3>
+        {message && <div className="error-message">{message}</div>}
         <form onSubmit={handleSubmit}>
+        <select className="buttonSpace" 
+          value={userType} onChange={(e) => setUserType(e.target.value)}>
+          <option value="" disabled selected>
+          Select User Type
+          </option>
+          <option value="doctor">Doctor</option>
+          <option value="patient">Patient</option>
+          </select>
           <div className="inputBox">
             <input   
               id="uname"
               type="email" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Username" />
+              placeholder="Username" disabled={!userType}/>
             <input 
               id="pass"  
               type="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
-              placeholder="Password" />
+              placeholder="Password" disabled={!userType}/>
           </div>
           <input type="submit" name="" value="Login" />
         </form>
