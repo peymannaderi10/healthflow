@@ -97,6 +97,14 @@ app.get('/doctors', async (req, res) => {
   res.json(result.rows);
 });
 
+/**
+ * request body for signup doctor should have 
+ * name 
+ * contact
+ * specialization
+ * email
+ * password
+ */
 app.post('/sign-up-doctor',async(req,res)=>{
     const name = req.body.name;
     const specialization = req.body.specialization;
@@ -109,6 +117,11 @@ app.post('/sign-up-doctor',async(req,res)=>{
     res.json({result});
 });
 
+/**
+ * request body for login doctor should have 
+ * email
+ * password
+ */
 app.post('/login-doctor',async(req,res)=>{
     const {email,password} = req.body;
     const result = await client.execute(`SELECT * FROM local_db.doctors WHERE email = '${email}' ALLOW FILTERING`);
@@ -119,8 +132,17 @@ app.post('/login-doctor',async(req,res)=>{
             message: 'Invalid Credentials'
         })
     }
-})
+});
 
+
+/**
+ * request body for signup patient should have 
+ * name 
+ * contact
+ * address
+ * email
+ * password
+ */
 app.post('/sign-up-patient',async(req,res)=>{
     const name = req.body.name;
     const address = req.body.address;
@@ -133,6 +155,11 @@ app.post('/sign-up-patient',async(req,res)=>{
     res.json({result});
 });
 
+/**
+ * request body for login patient should have 
+ * email
+ * password
+ */
 app.post('/login-patient',async(req,res)=>{
     const {email,password} = req.body;
     const result = await client.execute(`SELECT * FROM local_db.patients WHERE email = '${email}' ALLOW FILTERING`);
@@ -148,6 +175,13 @@ app.post('/login-patient',async(req,res)=>{
     }
 });
 
+/**
+ * request body for add appointment should have 
+ * doctorid 
+ * patientid
+ * appointmentdate
+ * venue
+ */
 app.post('/add-appointment',async (req,res)=>{
     const {
     doctorid,
@@ -162,6 +196,12 @@ app.post('/add-appointment',async (req,res)=>{
     res.json({result});
 });
 
+/**
+ * request body for update appointment should have 
+ * appointmentid 
+ * appointmentdate
+ * venue
+ */
 app.put('/update-appointment',async (req,res)=>{
     const {
     appointmentid,
@@ -173,6 +213,10 @@ app.put('/update-appointment',async (req,res)=>{
     res.json({result});
 });
 
+/**
+ * request body for delete appointment should have 
+ * appointmentid 
+ */
 app.delete('/delete-appointment',async (req,res)=>{
     const {
     appointmentid,
@@ -182,6 +226,14 @@ app.delete('/delete-appointment',async (req,res)=>{
 
     res.json({result});
 });
+
+/**
+ * request body for add medical history should have 
+ * patientid 
+ * testName
+ * testResult
+ * date
+ */
 
 app.post('/add-medical-history',async (req,res)=>{
     const {
@@ -198,7 +250,10 @@ app.post('/add-medical-history',async (req,res)=>{
 });
 
 
-
+/**
+ * request body for get appointments of patient should have 
+ * patientid
+ */
 app.post('/get-appointments-patient',async(req,res)=>{
     const {patientid} = req.body;
     const result = await client.execute(`SELECT * FROM local_db.appointments WHERE patientid = ${patientid} ALLOW FILTERING`);
@@ -213,6 +268,11 @@ app.post('/get-appointments-patient',async(req,res)=>{
     }
 });
 
+
+/**
+ * request body for get appointments of doctors should have 
+ * doctorid
+ */
 app.post('/get-appointments-doctors',async(req,res)=>{
     const {doctorid} = req.body;
     const result = await client.execute(`SELECT * FROM local_db.appointments WHERE doctorid = ${doctorid} ALLOW FILTERING`);
@@ -229,7 +289,7 @@ app.post('/get-appointments-doctors',async(req,res)=>{
 
 
 
-// Select doctor by doctorID
+// Select doctor by doctorID //ignore
 app.get('/doctors/:doctorID', async (req, res) => {
   const { doctorID } = req.params;
   const result = await client.execute('SELECT * FROM local_db.doctors WHERE doctorid = ?', [doctorID]);
@@ -237,6 +297,7 @@ app.get('/doctors/:doctorID', async (req, res) => {
 });
 
 
+//ignore
 // Select patient by patientID
 app.get('/patients', async (req, res) => {
   const { patientID } = req.params;
@@ -244,6 +305,7 @@ app.get('/patients', async (req, res) => {
   res.json(result.rows);
 });
 
+//ignore
 // Select all appointments of a patient
 app.get('/appointments/patient/:patientID', async (req, res) => {
   const { patientID } = req.params;
@@ -251,6 +313,8 @@ app.get('/appointments/patient/:patientID', async (req, res) => {
   res.json(result.rows);
 });
 
+
+//ignore
 // Select all appointments of a doctor
 app.get('/appointments/doctor/:doctorID', async (req, res) => {
   const { doctorID } = req.params;
