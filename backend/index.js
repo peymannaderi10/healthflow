@@ -204,11 +204,12 @@ app.post('/add-appointment',async (req,res)=>{
  */
 app.put('/update-appointment',async (req,res)=>{
     const {
+      doctorid,
     appointmentid,
     appointmentdate,
     venue } = req.body;
 
-    const result = await client.execute(`UPDATE local_db.appointments SET venue = '${venue}', appointmentDate = '${appointmentdate}' where appointmentid = ${appointmentid}`);
+    const result = await client.execute(`UPDATE local_db.appointments SET venue = '${venue}', appointmentDate = '${appointmentdate}', doctorid = ${doctorid} where appointmentid = ${appointmentid}`);
 
     res.json({result});
 });
@@ -247,6 +248,25 @@ app.post('/add-medical-history',async (req,res)=>{
     `);
 
     res.json({result});
+});
+
+app.post('/get-medical-history',async (req,res)=>{
+  const {
+  patientid
+  } = req.body;
+
+  const result = await client.execute(`SELECT * FROM local_db.medicalHistory WHERE patientid = ${patientid}
+  `);
+
+  if(result){
+      res.json({
+          medicalHistory: result.rows
+      })
+  }else{
+      res.json({
+          medicalHistory: []
+      })
+  }
 });
 
 
