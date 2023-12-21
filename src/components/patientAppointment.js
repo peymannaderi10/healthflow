@@ -216,7 +216,7 @@ const handleSubmit = async (event) => {
                   setEditedDate(appointment.appointmentdate);
                   setEditedVenue(appointment.venue);
                 }}>Update</button>
-                <button onClick={() => handleDelete(appointment.appointmentid)}>Delete</button>
+                <button onClick={() => handleDelete(appointment.appointmentid)}>Cancel</button>
               </>
             )}
           </li>
