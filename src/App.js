@@ -8,6 +8,8 @@ import DoctorDashboard from "./components/doctor-dashboard";
 import PatientDashboard from "./components/patient-dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import PatientAppointments from "./components/patientAppointment";
+import PatientMedicalHistory from "./components/patientMecialHistory";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -42,6 +44,14 @@ function App() {
             element={
               <PrivateRoute>
                 <PatientAppointments/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/patientMedicalHistory"
+            element={
+              <PrivateRoute>
+                <PatientMedicalHistory/>
               </PrivateRoute>
             }
           />

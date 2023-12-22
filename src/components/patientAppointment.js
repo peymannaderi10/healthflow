@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -6,10 +6,11 @@ function PatientAppointment() {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState('');
   const [appointmentDate, setAppointmentDate] = useState('');
-  const [venue, setVenue] = useState('');
+  const [venue, setVenue] = useState('Venue A');
   const [appointments, setAppointments] = useState([]); // State for storing appointments
   const [editingAppointment, setEditingAppointment] = useState(null); // Track the appointment being edited
   const [editedDate, setEditedDate] = useState('');
+  const [editedDocId, setEditedDocId] = useState('');
   const [editedVenue, setEditedVenue] = useState('');
   const { userData } = useAuth(); // Assuming userData contains patientid
   const [successMessage, setSuccessMessage] = useState('');
@@ -20,6 +21,7 @@ function PatientAppointment() {
 const handleUpdate = async (event, appointmentid) => {
     event.preventDefault(); // Prevent default form submission behavior
     const updatedAppointment = {
+      doctorid: editedDocId,
       appointmentid,
       appointmentdate: editedDate,
       venue: editedVenue
@@ -169,8 +171,6 @@ const handleSubmit = async (event) => {
         <label>
           Venue:
           <select value={venue} onChange={e => setVenue(e.target.value)}>
-            <option value="">Select a Venue</option>
-            {/* Example static venues */}
             <option value="Venue A">Venue A</option>
             <option value="Venue B">Venue B</option>
             <option value="Venue C">Venue C</option>
@@ -215,6 +215,7 @@ const handleSubmit = async (event) => {
                   setEditingAppointment(appointment.appointmentid);
                   setEditedDate(appointment.appointmentdate);
                   setEditedVenue(appointment.venue);
+                  setEditedDocId(appointment.doctorid);
                 }}>Update</button>
                 <button onClick={() => handleDelete(appointment.appointmentid)}>Cancel</button>
               </>

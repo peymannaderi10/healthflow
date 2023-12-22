@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const client = new Client({
     cloud: {
-    secureConnectBundle: "/Users/kamalpreetsingh/downloads/secure-connect-mock-cassandra-db.zip", // replace it with actual path of cassandra bundle
+    secureConnectBundle: "C:/Users/Peyman/Downloads/secure-connect-mock-cassandra-db.zip", // replace it with actual path of cassandra bundle
     },
     credentials: {
     username: `${process.env.CLIENT_ID}`,
@@ -204,7 +204,7 @@ app.post('/add-appointment',async (req,res)=>{
  */
 app.put('/update-appointment',async (req,res)=>{
     const {
-      doctorid,
+    doctorid,
     appointmentid,
     appointmentdate,
     venue } = req.body;
@@ -255,7 +255,7 @@ app.post('/get-medical-history',async (req,res)=>{
   patientid
   } = req.body;
 
-  const result = await client.execute(`SELECT * FROM local_db.medicalHistory WHERE patientid = ${patientid}
+  const result = await client.execute(`SELECT * FROM local_db.medicalHistory WHERE patientid = ${patientid} ALLOW FILTERING
   `);
 
   if(result){
@@ -307,7 +307,17 @@ app.post('/get-appointments-doctors',async(req,res)=>{
     }
 });
 
-
+// Select patient by patientID
+app.get('/getPatient', async (req, res) => {
+    const patientID = req.query.patientID; // Retrieve patientID from query parameters
+    try {
+      const result = await client.execute('SELECT * FROM local_db.patients WHERE patientid = ?', [patientID], { prepare: true });
+      res.json(result.rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error fetching patient data' });
+    }
+  });
 
 // Select doctor by doctorID //ignore
 app.get('/doctors/:doctorID', async (req, res) => {
