@@ -33,8 +33,8 @@ function PatientDashboard() {
           {userData.medicalHistory && userData.medicalHistory.length > 0 ? (
             userData.medicalHistory.map((history, index) => (
               <li key={index}>
-                <p><strong>Test Name:</strong> {history.testName}</p>
-                <p><strong>Result:</strong> {history.testResult}</p>
+                <p><strong>Test Name:</strong> {history.testname}</p>
+                <p><strong>Result:</strong> {history.testresult}</p>
                 <p><strong>Date:</strong> {history.date}</p>
               </li>
             ))
